@@ -2,25 +2,26 @@ import {BinaryTreeNode} from './BinaryTreeNode';
 
 export class BinaryTree {
 
-  private _head: BinaryTreeNode;
-  private _count: number;
+  private head: BinaryTreeNode;
+  private count: number;
 
-  constructor(value: number) {
-    this._count = 1;
+  constructor()
+  constructor(value?: number) {
+    this.count = 0;
     if (value === null) {
-      this._head = null;
+      this.head = null;
     } else {
-        this._head = new BinaryTreeNode(value);
+        this.head = new BinaryTreeNode(value);
     }
   }
 
   public Add(value: number): void {
-    if (this._head == null) {
-      this._head = new BinaryTreeNode(value);
+    if (this.head == null) {
+      this.head = new BinaryTreeNode(value);
     } else {
-      this.RecursionAdd(this._head, value);
+      this.RecursionAdd(this.head, value);
     }
-    this._count++;
+    this.count++;
   }
 
   private RecursionAdd (node: BinaryTreeNode, value: number): void {
@@ -54,8 +55,8 @@ export class BinaryTree {
   }
 
   public ShowTreeConsole(): void {
-    if (this._head != null) {
-      this.ShowRecursion(this._head);
+    if (this.head != null) {
+      this.ShowRecursion(this.head);
     }
   }
 
@@ -67,7 +68,52 @@ export class BinaryTree {
     }
   }
 
-  public Contain(value: number): boolean {
-    return true;
+  private Minimum(element: BinaryTreeNode): BinaryTreeNode {
+    if (element._LeftTree == null) {
+      return element;
+    }
+    return this.Minimum(element._LeftTree);
+  }
+
+  public Delete(value: number): void {
+    console.log(this.Remove(this.head, value));
+  }
+
+  private Remove(root: BinaryTreeNode, value: number): BinaryTreeNode {
+    if (root == null) {
+      return root;
+    }
+    if (value < root._Value) {
+      root._LeftTree = this.Remove(root._LeftTree, value);
+    } else if (value > root._Value) {
+      root._RightTree = this.Remove(root._RightTree, value);
+           } else if (root._LeftTree != null && root._RightTree != null) {
+      root._Value = this.Minimum(root._RightTree)._Value;
+      root._RightTree = this.Remove(root._RightTree, root._Value);
+    } else if (root._LeftTree != null) {
+      root = root._LeftTree;
+           } else {
+      root = root._RightTree;
+           }
+    return root;
+  }
+
+  public FindNode(value: number): void {
+    if (this.Contain(this.head, value)) {
+      console.log('true');
+    } else {
+      console.log('false');
+    }
+  }
+
+  private Contain(element: BinaryTreeNode, value: number): BinaryTreeNode {
+    if (element == null || value === element._Value) {
+      return element;
+    }
+    if (value < element._Value) {
+      return this.Contain(element._LeftTree, value);
+    } else {
+      return this.Contain(element._RightTree, value);
+    }
   }
 }
