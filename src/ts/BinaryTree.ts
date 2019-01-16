@@ -1,40 +1,49 @@
 import {BinaryTreeNode} from './BinaryTreeNode';
 
+interface IBinaryTree {
+  head: BinaryTreeNode;
+  count: number;
+
+  Add(value: number): void;
+  Delete(value: number): void;
+  FindNode(value: number): void;
+}
+
 export class BinaryTree {
 
   private head: BinaryTreeNode;
   private count: number;
 
-  constructor(value: number) {
+  constructor(value: number, data: number) {
     this.count = 0;
     if (value === null) {
       this.head = null;
     } else {
-        this.head = new BinaryTreeNode(value);
+        this.head = new BinaryTreeNode(value, data);
     }
   }
 
-  public Add(value: number): void {
+  public Add(value: number, data: number): void {
     if (this.head == null) {
-      this.head = new BinaryTreeNode(value);
+      this.head = new BinaryTreeNode(value, data);
     } else {
-      this.RecursionAdd(this.head, value);
+      this.RecursionAdd(this.head, value, data);
     }
     this.count++;
   }
 
-  private RecursionAdd (node: BinaryTreeNode, value: number): void {
-    if (this.Compare(node._Value, value) < 0) {
-      if (node._LeftTree == null) {
-        node._LeftTree = new BinaryTreeNode(value);
+  private RecursionAdd (node: BinaryTreeNode, value: number, data: number): void {
+    if (this.Compare(node.Value, value) < 0) {
+      if (node.LeftTree == null) {
+        node.LeftTree = new BinaryTreeNode(value, data);
       } else {
-        this.RecursionAdd(node._LeftTree, value);
+        this.RecursionAdd(node.LeftTree, value, data);
       }
     } else {
-      if (node._RightTree == null) {
-        node._RightTree = new BinaryTreeNode(value);
+      if (node.RightTree == null) {
+        node.RightTree = new BinaryTreeNode(value, data);
       } else {
-        this.RecursionAdd(node._RightTree, value);
+        this.RecursionAdd(node.RightTree, value, data);
       }
     }
   }
@@ -61,17 +70,17 @@ export class BinaryTree {
 
   private ShowRecursion(element: BinaryTreeNode): void {
     if (element != null) {
-      console.log(element._Value);
-      this.ShowRecursion(element._LeftTree);
-      this.ShowRecursion(element._RightTree);
+      console.log(element.Value);
+      this.ShowRecursion(element.LeftTree);
+      this.ShowRecursion(element.RightTree);
     }
   }
 
   private Minimum(element: BinaryTreeNode): BinaryTreeNode {
-    if (element._LeftTree == null) {
+    if (element.LeftTree == null) {
       return element;
     }
-    return this.Minimum(element._LeftTree);
+    return this.Minimum(element.LeftTree);
   }
 
   public Delete(value: number): void {
@@ -82,17 +91,17 @@ export class BinaryTree {
     if (root == null) {
       return root;
     }
-    if (value < root._Value) {
-      root._LeftTree = this.Remove(root._LeftTree, value);
-    } else if (value > root._Value) {
-      root._RightTree = this.Remove(root._RightTree, value);
-           } else if (root._LeftTree != null && root._RightTree != null) {
-      root._Value = this.Minimum(root._RightTree)._Value;
-      root._RightTree = this.Remove(root._RightTree, root._Value);
-    } else if (root._LeftTree != null) {
-      root = root._LeftTree;
+    if (value < root.Value) {
+      root.LeftTree = this.Remove(root.LeftTree, value);
+    } else if (value > root.Value) {
+      root.RightTree = this.Remove(root.RightTree, value);
+           } else if (root.LeftTree != null && root.RightTree != null) {
+      root.Value = this.Minimum(root.RightTree).Value;
+      root.RightTree = this.Remove(root.RightTree, root.Value);
+    } else if (root.LeftTree != null) {
+      root = root.LeftTree;
            } else {
-      root = root._RightTree;
+      root = root.RightTree;
            }
     return root;
   }
@@ -106,13 +115,13 @@ export class BinaryTree {
   }
 
   private Contain(element: BinaryTreeNode, value: number): BinaryTreeNode {
-    if (element == null || value === element._Value) {
+    if (element == null || value === element.Value) {
       return element;
     }
-    if (value < element._Value) {
-      return this.Contain(element._LeftTree, value);
+    if (value < element.Value) {
+      return this.Contain(element.LeftTree, value);
     } else {
-      return this.Contain(element._RightTree, value);
+      return this.Contain(element.RightTree, value);
     }
   }
 }

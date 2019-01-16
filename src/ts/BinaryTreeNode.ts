@@ -1,13 +1,26 @@
-export class BinaryTreeNode {
+// TODO исправить дэйту с помощью обобщения!!!
+// TODO Добавить дэйту в удаление и поиск
+// TODO Возвращать что-то при поиске и удалении и добавлении наверно.
 
-  public _LeftTree: BinaryTreeNode;
-  public _RightTree: BinaryTreeNode;
-  public _Value: number;
+interface IBinaryTreeNode {
+  LeftTree: BinaryTreeNode;
+  RightTree: BinaryTreeNode;
+  Value: number;
+  Data: number;
+}
 
-  public constructor(value: number) {
-    this._Value = value;
-    this._LeftTree = null;
-    this._RightTree = null;
+export class BinaryTreeNode implements IBinaryTreeNode{
+
+  public LeftTree: BinaryTreeNode;
+  public RightTree: BinaryTreeNode;
+  public Value: number;
+  public Data: number;
+
+  public constructor(value: number, data: number) {
+    this.Value = value;
+    this.Data = data;
+    this.LeftTree = null;
+    this.RightTree = null;
   }
 
   // public get LeftTree(): BinaryTreeNode {
