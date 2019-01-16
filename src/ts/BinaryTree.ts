@@ -5,8 +5,7 @@ export class BinaryTree {
   private head: BinaryTreeNode;
   private count: number;
 
-  constructor()
-  constructor(value?: number) {
+  constructor(value: number) {
     this.count = 0;
     if (value === null) {
       this.head = null;
