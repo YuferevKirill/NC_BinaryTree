@@ -168,4 +168,8 @@ export class BinaryTree<T extends string | number> implements IBinaryTree<T> {
       return this.Contain(node.rightTree, key);
     }
   }
+
+  GetHead() {
+    return this.head;
+  }
 }
