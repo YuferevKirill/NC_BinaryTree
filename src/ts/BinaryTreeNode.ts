@@ -1,26 +1,23 @@
-// TODO исправить дэйту с помощью обобщения!!!
-// TODO Добавить дэйту в удаление и поиск
-// TODO Возвращать что-то при поиске и удалении и добавлении наверно.
-
-interface IBinaryTreeNode {
-  LeftTree: BinaryTreeNode;
-  RightTree: BinaryTreeNode;
-  Value: number;
-  Data: number;
+interface IBinaryTreeNode<T> {
+  leftTree: BinaryTreeNode<T>;
+  rightTree: BinaryTreeNode<T>;
+  key: T;
+  data: T;
 }
 
-export class BinaryTreeNode implements IBinaryTreeNode{
+export class BinaryTreeNode<T> implements IBinaryTreeNode<T>{
 
-  public LeftTree: BinaryTreeNode;
-  public RightTree: BinaryTreeNode;
-  public Value: number;
-  public Data: number;
+  public leftTree: BinaryTreeNode<T>;
+  public rightTree: BinaryTreeNode<T>;
+  public key: T;
+  public data: T;
 
-  public constructor(value: number, data: number) {
-    this.Value = value;
-    this.Data = data;
-    this.LeftTree = null;
-    this.RightTree = null;
+  public constructor(key: T, data: T) {
+    this.leftTree = null;
+    this.rightTree = null;
+    this.key = key;
+    this.data = data;
+
   }
 
   // public get LeftTree(): BinaryTreeNode {

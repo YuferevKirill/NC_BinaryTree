@@ -1,127 +1,171 @@
 import {BinaryTreeNode} from './BinaryTreeNode';
 
-interface IBinaryTree {
-  head: BinaryTreeNode;
-  count: number;
-
-  Add(value: number): void;
-  Delete(value: number): void;
-  FindNode(value: number): void;
+enum Comparison {
+    More = -1,
+    Equal = 0,
+    Less = 1
 }
 
-export class BinaryTree {
+interface IBinaryTree<T> {
+  Add(value: T, data: T): void;
+  Delete(value: T, data: T): void;
+  FindNode(value: T, data: T): void;
+  ShowTreeConsole(): void;
+}
 
-  private head: BinaryTreeNode;
+export class BinaryTree<T extends string | number> implements IBinaryTree<T> {
+
+  private head: BinaryTreeNode<T>;
   private count: number;
 
-  constructor(value: number, data: number) {
+  constructor(key?: T, data?: T) {
     this.count = 0;
-    if (value === null) {
+    if (key === undefined) {
       this.head = null;
     } else {
-        this.head = new BinaryTreeNode(value, data);
+        this.head = new BinaryTreeNode(key, data);
     }
   }
 
-  public Add(value: number, data: number): void {
+  /** @description Добавление элемента.
+   * @params {T} - ключ; {T} - данные.
+   */
+  public Add(key: T, data: T): void {
     if (this.head == null) {
-      this.head = new BinaryTreeNode(value, data);
+      this.head = new BinaryTreeNode(key, data);
     } else {
-      this.RecursionAdd(this.head, value, data);
+      this.RecursionAdd(this.head, key, data);
     }
     this.count++;
   }
 
-  private RecursionAdd (node: BinaryTreeNode, value: number, data: number): void {
-    if (this.Compare(node.Value, value) < 0) {
-      if (node.LeftTree == null) {
-        node.LeftTree = new BinaryTreeNode(value, data);
-      } else {
-        this.RecursionAdd(node.LeftTree, value, data);
-      }
-    } else {
-      if (node.RightTree == null) {
-        node.RightTree = new BinaryTreeNode(value, data);
-      } else {
-        this.RecursionAdd(node.RightTree, value, data);
-      }
-    }
-  }
-
-  /** @description Сравнение текущей ноды со значением, которое хотим вставить
-   * @param {number} то, что в текущей ноде, {number} то, что будем вставлять
-   * @return {number} 1 = текущее меньше вставляемого, -1 = текущее больше вставляемого, 0 = равны.
+  /** @description Рекурсивное добавление.
+   * @params {BinaryTreeNode<T>} - корень дерева; {T} - ключ; {T} - данные.
+   * @return {BinaryTreeNode<T>} - добавленный элемент.
    */
-  private Compare (current: number, insertable: number): number {
-    if (current < insertable) {
-      return 1;
+  private RecursionAdd (node: BinaryTreeNode<T>, key: T, data: T): BinaryTreeNode<T> {
+    if (this.Compare(node.key, key) < 0) {
+      if (node.leftTree == null) {
+        node.leftTree = new BinaryTreeNode(key, data);
+      } else {
+        this.RecursionAdd(node.leftTree, key, data);
+      }
     } else {
-      if (current > insertable) {
-        return -1;
-      } else { return 0; }
+      if (node.rightTree == null) {
+        node.rightTree = new BinaryTreeNode(key, data);
+      } else {
+        this.RecursionAdd(node.rightTree, key, data);
+      }
+    }
+    return node;
+  }
+
+  /** @description Сравнение ключей.
+   * @param {T} - ключ текущего элемента; {T} - ключ добавляемого элемента.
+   * @return {number} 1 - текущее меньше вставляемого, -1 - текущее больше вставляемого, 0 - равны.
+   */
+  private Compare (current: T, insert: T): number {
+    if (current < insert) {
+      return Comparison.Less;
+    } else {
+      if (current > insert) {
+        return Comparison.More;
+      } else { return Comparison.Equal; }
     }
   }
 
+  /** @description Вывод в консоль.
+   */
   public ShowTreeConsole(): void {
     if (this.head != null) {
       this.ShowRecursion(this.head);
     }
   }
 
-  private ShowRecursion(element: BinaryTreeNode): void {
-    if (element != null) {
-      console.log(element.Value);
-      this.ShowRecursion(element.LeftTree);
-      this.ShowRecursion(element.RightTree);
+  /** @description Рекурсивный вывод.
+   *  @param {BinaryTreeNode<T>} - корень дерева.
+   */
+  private ShowRecursion(node: BinaryTreeNode<T>): void {
+    if (node != null) {
+      console.log(node.key);
+      this.ShowRecursion(node.leftTree);
+      this.ShowRecursion(node.rightTree);
     }
   }
 
-  private Minimum(element: BinaryTreeNode): BinaryTreeNode {
-    if (element.LeftTree == null) {
-      return element;
+  /** @description Удаление элемента из дерева.
+   * @param {T} ключ, по которому необходимо найти и удалить.
+   */
+  public Delete(key: T): void {
+    const IsRemoved = this.Remove(this.head, key);
+    if (IsRemoved != null) {
+      this.head = IsRemoved;
+      console.log(this.head);
+      this.count--;
+    } else {
+      console.log('Такого элемента не существует!');
     }
-    return this.Minimum(element.LeftTree);
   }
 
-  public Delete(value: number): void {
-    console.log(this.Remove(this.head, value));
-  }
-
-  private Remove(root: BinaryTreeNode, value: number): BinaryTreeNode {
+  /** @description Рекурсивное удаление.
+   * @param {BinaryTreeNode<T>} - Корень дерева; {T} - ключ по которому будет производиться поиск.
+   * @return {BinaryTreeNode<T>} - Корень дерева, элемент удалён. ( null в случае отсутствия элемента для удаления).
+   */
+  private Remove(root: BinaryTreeNode<T>, key: T): BinaryTreeNode<T> {
     if (root == null) {
       return root;
     }
-    if (value < root.Value) {
-      root.LeftTree = this.Remove(root.LeftTree, value);
-    } else if (value > root.Value) {
-      root.RightTree = this.Remove(root.RightTree, value);
-           } else if (root.LeftTree != null && root.RightTree != null) {
-      root.Value = this.Minimum(root.RightTree).Value;
-      root.RightTree = this.Remove(root.RightTree, root.Value);
-    } else if (root.LeftTree != null) {
-      root = root.LeftTree;
+    if (key < root.key) {
+      root.leftTree = this.Remove(root.leftTree, key);
+    } else if (key > root.key) {
+      root.rightTree = this.Remove(root.rightTree, key);
+           } else if (root.leftTree != null && root.rightTree != null) {
+      root.key = this.Minimum(root.rightTree).key;
+      root.data = this.Minimum(root.rightTree).data;
+      root.rightTree = this.Remove(root.rightTree, root.key);
+    } else if (root.leftTree != null) {
+      root = root.leftTree;
            } else {
-      root = root.RightTree;
+      root = root.rightTree;
            }
     return root;
   }
 
-  public FindNode(value: number): void {
-    if (this.Contain(this.head, value)) {
-      console.log('true');
+  /** @description поиск минимального ключа.
+   * @param {BinaryTreeNode<T>} - элемент дерева.
+   * @return {BinaryTreeNode<T>} - элемент с минимальным ключом.
+   */
+  private Minimum(node: BinaryTreeNode<T>): BinaryTreeNode<T> {
+    if (node.leftTree == null) {
+      return node;
+    }
+    return this.Minimum(node.leftTree);
+  }
+
+  /** @description Поиск в дереве элемента по ключу.
+   * @param {T} - Ключ по которому производится поиск.
+   */
+  public FindNode(key: T): void {
+    const resultOfFind = this.Contain(this.head, key);
+    if (resultOfFind != null) {
+      console.log(` key: ${resultOfFind.key}, data: ${resultOfFind.data} .`);
     } else {
-      console.log('false');
+      console.log('Такого элемента не существует!');
     }
   }
 
-  private Contain(element: BinaryTreeNode, value: number): BinaryTreeNode {
-    if (element == null || value === element.Value) {
-      return element;
+  /** @description Входит ли элемент в дерево?
+   * @param {BinaryTreeNode<T>} Корень дерева; {T} - ключ по которому будет производиться поиск.
+   * @return {BinaryTreeNode<T>} Найденный элемент( или null, в случае её отсутствия ).
+   */
+  private Contain(node: BinaryTreeNode<T>, key: T): BinaryTreeNode<T> {
+    if (node == null || key === node.key) {
+      return node;
     }
-    if (value < element.Value) {
-      return this.Contain(element.LeftTree, value);
+    if (key < node.key) {
+      return this.Contain(node.leftTree, key);
     } else {
-      return this.Contain(element.RightTree, value);
+      return this.Contain(node.rightTree, key);
     }
   }
 }
