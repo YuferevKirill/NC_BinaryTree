@@ -11,6 +11,7 @@ interface IBinaryTree<T> {
   Delete(value: T, data: T): void;
   FindNode(value: T, data: T): void;
   ShowTreeConsole(): void;
+  GetHead(): BinaryTreeNode<T>;
 }
 
 export class BinaryTree<T extends string | number> implements IBinaryTree<T> {
@@ -169,7 +170,14 @@ export class BinaryTree<T extends string | number> implements IBinaryTree<T> {
     }
   }
 
-  GetHead() {
-    return this.head;
+  /** @description Возвращает корень дерева.
+   * @return {BinaryTreeNode<T>} - корень.
+   */
+  public GetHead(): BinaryTreeNode<T> {
+    try {
+      return this.head;
+    } catch (ex) {
+      console.log(ex.message);
+    }
   }
 }

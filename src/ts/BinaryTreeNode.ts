@@ -17,7 +17,6 @@ export class BinaryTreeNode<T> implements IBinaryTreeNode<T>{
     this.rightTree = null;
     this.key = key;
     this.data = data;
-
   }
 
   // public get LeftTree(): BinaryTreeNode {
